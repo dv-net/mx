@@ -6,7 +6,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.60.0
 	google.golang.org/grpc v1.71.0
-	github.com/dv-net/mx v0.0.0-20250314125900-6178d4ce04ad
+	github.com/dv-net/mx v0.0.0-20250826134402-e8489a601eb3
 )
 
 require (
