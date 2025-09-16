@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type Option func(*logger)
@@ -57,4 +58,23 @@ func WithStackTrace(v bool) Option {
 // WithZapOption allows to set zap.Option.
 func WithZapOption(v zap.Option) Option {
 	return func(l *logger) { l.options = append(l.options, v) }
+}
+
+// WithMemoryBuffer enables in-memory log buffer with given capacity.
+func WithMemoryBuffer(capacity int) Option {
+	return func(l *logger) {
+		wrapper := func(core zapcore.Core) zapcore.Core {
+			mem := newMemoryCore(capacity, core)
+			l.memCore = mem
+			return mem
+		}
+		l.options = append(l.options, zap.WrapCore(wrapper))
+	}
+}
+
+// Option for wresting Core
+func WithCoreWrapper(wrapper func(zapcore.Core) zapcore.Core) Option {
+	return func(l *logger) {
+		l.options = append(l.options, zap.WrapCore(wrapper))
+	}
 }

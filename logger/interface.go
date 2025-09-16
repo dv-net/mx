@@ -27,6 +27,7 @@ type ExtendedLogger interface {
 	Sync() error
 	Std() *log.Logger
 	Sugar() *sugaredLogger
+	LastLogs() []MemoryLog
 }
 
 // Logger common interface.
