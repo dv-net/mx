@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpcreflect v1.3.0
-	github.com/dv-net/mx v0.0.0-20250826134402-e8489a601eb3
+	github.com/dv-net/mx v0.1.0
 )
 
 require (

@@ -19,6 +19,8 @@ type logger struct {
 	options   []zap.Option
 
 	*sugaredLogger
+	// memory log buffer
+	memCore *memoryCore
 }
 
 // Sugar returns zap.SugaredLogger.
@@ -79,12 +81,13 @@ func With(l Logger, args ...any) Logger {
 	lg := lgIface.LoggerInstance()
 
 	return &logger{
-		lg.config,
-		lg.appName,
-		lg.appVersion,
-		lg.zapConfig,
-		lg.options,
-		lg.With(args...),
+		config:        lg.config,
+		appName:       lg.appName,
+		appVersion:    lg.appVersion,
+		zapConfig:     lg.zapConfig,
+		options:       lg.options,
+		sugaredLogger: lg.With(args...),
+		memCore:       lg.memCore,
 	}
 }
 
@@ -98,12 +101,13 @@ func WithExtended(l ExtendedLogger, args ...any) ExtendedLogger {
 	lg := lgIface.LoggerInstance()
 
 	return &logger{
-		lg.config,
-		lg.appName,
-		lg.appVersion,
-		lg.zapConfig,
-		lg.options,
-		lg.With(args...),
+		config:        lg.config,
+		appName:       lg.appName,
+		appVersion:    lg.appVersion,
+		zapConfig:     lg.zapConfig,
+		options:       lg.options,
+		sugaredLogger: lg.With(args...),
+		memCore:       lg.memCore,
 	}
 }
 
@@ -160,4 +164,11 @@ func initLogger(opts ...Option) *logger {
 	l.sugaredLogger = zapLogger.Sugar()
 
 	return &l
+}
+
+func (l *logger) LastLogs() []MemoryLog {
+	if l.memCore == nil {
+		return nil
+	}
+	return l.memCore.LastLogs()
 }
