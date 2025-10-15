@@ -6,6 +6,7 @@ require (
 	github.com/go-playground/validator/v10 v10.25.0
 	github.com/goccy/go-json v0.10.5
 	github.com/goccy/go-yaml v1.15.23
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.6
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.13.0
