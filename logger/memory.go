@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"encoding/json"
 	"sync"
 	"time"
 
@@ -11,6 +12,7 @@ type MemoryLog struct {
 	Time    time.Time `json:"time"`
 	Level   string    `json:"level"`
 	Message string    `json:"message"`
+	Fields  string    `json:"fields,omitempty"`
 }
 
 type memoryBuffer struct {
@@ -27,10 +29,24 @@ func (mem *memoryCore) Write(ent zapcore.Entry, fields []zapcore.Field) error {
 	mem.buffer.mu.Lock()
 	defer mem.buffer.mu.Unlock()
 
+	// Convert zap fields to map
+	fieldMap := make(map[string]any)
+	encoder := zapcore.NewMapObjectEncoder()
+	for _, field := range fields {
+		field.AddTo(encoder)
+	}
+	fieldMap = encoder.Fields
+
+	fieldsData, err := json.Marshal(fieldMap)
+	if err != nil {
+		fieldsData = []byte("{}") // Fallback to empty JSON object on error
+	}
+
 	lg := MemoryLog{
 		Time:    ent.Time,
 		Level:   ent.Level.String(),
 		Message: ent.Message,
+		Fields:  string(fieldsData),
 	}
 	mem.buffer.logs = append([]MemoryLog{lg}, mem.buffer.logs...)
 	if len(mem.buffer.logs) > mem.capacity {
